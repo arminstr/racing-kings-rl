@@ -101,15 +101,16 @@ class RacingKingsEnvironment(gym.Env):
                     done = True
                 if self.board.is_variant_end():
                     if self.who(not self.board.turn) == "Black":
-                        step_reward += 1
+                        step_reward += 10
                         info = {"msg":"AI won the game (being black)!"} 
                         done = True
                     else:
+                        step_reward +=0.5
                         info = {"msg":"Random Player won!"} 
                         done = True
                     info = {"msg":"racing kings: " + self.who(not self.board.turn) + " wins!"}
         else:
-            step_reward -=1
+            step_reward +=1
             done = True
             info = {"msg":"game over"}
 
