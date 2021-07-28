@@ -1,0 +1,2 @@
+model_checkpoint_path: "target_100k_net-025-1e-5_no-neg-reward.h5f"
+all_model_checkpoint_paths: "target_100k_net-025-1e-5_no-neg-reward.h5f"
