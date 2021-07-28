@@ -12,7 +12,7 @@ class RacingKingsEnvironment(gym.Env):
         super(RacingKingsEnvironment, self).__init__()
         self.board = chess.variant.RacingKingsBoard()
         self.reward = 0
-        self.state_shape = (14, 8, 8)
+        self.state_shape = (12, 8, 8)
         self.action_shape = 4096
         self.action_space = Discrete(self.action_shape)
         self.observation_space = Box(low=0, high=1, shape=self.state_shape, dtype=np.uint8)
@@ -23,6 +23,7 @@ class RacingKingsEnvironment(gym.Env):
             return self.board._repr_svg_()
         else:
             return "<pre>" + str(self.board) + "</pre>"
+    # TODO: Change this to the to fields of the moves
     def board_square_to_index(self, name):
         return (int(name[1])-1) * 8 + (ord(name[0])-97) 
     def action_index_to_uci(self, index):
@@ -57,20 +58,20 @@ class RacingKingsEnvironment(gym.Env):
                 idAlph = square%8
                 boardState[piece + 5][7 - idNum][idAlph] = 1        
         
-            temp = self.board.turn
-            self.board.turn = chess.WHITE
-            for move in list(self.board.legal_moves):
-                square = self.board_square_to_index(move.uci())
-                idNum = square//8
-                idAlph = square%8
-                boardState[12][7 - idNum][idAlph] = 1
-            self.board.turn = chess.BLACK
-            for move in list(self.board.legal_moves):
-                square = self.board_square_to_index(move.uci())
-                idNum = square//8
-                idAlph = square%8
-                boardState[13][7 - idNum][idAlph] = 1
-            self.board.turn = temp
+        #     temp = self.board.turn
+        #     self.board.turn = chess.WHITE
+        #     for move in list(self.board.legal_moves):
+        #         square = self.board_square_to_index(move.uci())
+        #         idNum = square//8
+        #         idAlph = square%8
+        #         boardState[12][7 - idNum][idAlph] = 1
+        #     self.board.turn = chess.BLACK
+        #     for move in list(self.board.legal_moves):
+        #         square = self.board_square_to_index(move.uci())
+        #         idNum = square//8
+        #         idAlph = square%8
+        #         boardState[13][7 - idNum][idAlph] = 1
+        #     self.board.turn = temp
         return boardState
     
     def step(self, action):
@@ -93,24 +94,24 @@ class RacingKingsEnvironment(gym.Env):
             if action is not None:
                 try:
                     self.board.push_uci(self.action_index_to_uci(action))
-                    step_reward += 0.1
+                    # step_reward += 0.001
                     info = {"msg":"Did a valid move"}
                 except:
-                    step_reward -= 1
+                    step_reward += 0
                     info = {"msg":"Action is not a valid move"} 
                     done = True
                 if self.board.is_variant_end():
                     if self.who(not self.board.turn) == "Black":
-                        step_reward += 10
+                        step_reward += 100
                         info = {"msg":"AI won the game (being black)!"} 
                         done = True
                     else:
-                        step_reward +=0.5
+                        step_reward += 0
                         info = {"msg":"Random Player won!"} 
                         done = True
                     info = {"msg":"racing kings: " + self.who(not self.board.turn) + " wins!"}
         else:
-            step_reward +=1
+            step_reward += 0
             done = True
             info = {"msg":"game over"}
 
