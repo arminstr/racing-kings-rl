@@ -2,3 +2,5 @@
 /env/*
 emlp.code-workspace
 Training/SavedModels/*
+rl-racing-kings-straller-anzenhofer/
+*.zip
